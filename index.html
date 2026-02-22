@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAVCAL Seating Chart</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1b2d45;
+    --navy-light: #243857;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --white: #f0f4f8;
+    --muted: #7a90a8;
+    --card-bg: #182538;
+    --card-border: #2a3f5a;
+    --no-pic: #2a3f5a;
+    --seat-empty: #111e2d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 40px 30px 60px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+    text-shadow: 0 2px 20px rgba(201,168,76,0.3);
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+  }
+
+  /* ── LAYOUT ── */
+  .section {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    align-items: flex-start;
+  }
+
+  .cluster {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  /* ── PERSON CARD ── */
+  .person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 80px;
+    text-align: center;
+  }
+
+  .person .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--card-border);
+    background: var(--navy-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+  }
+
+  .person:hover .avatar {
+    border-color: var(--gold);
+  }
+
+  .person .avatar.no-pic {
+    background: var(--no-pic);
+    border-style: dashed;
+    color: var(--muted);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .person .name {
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  /* ── EMPTY SEAT ── */
+  .empty-seat {
+    width: 80px;
+    height: 80px;
+    border: 2px dashed var(--card-border);
+    border-radius: 8px;
+    background: var(--seat-empty);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .empty-seat::after {
+    content: "—";
+    color: var(--navy-light);
+    font-size: 1.2rem;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--navy-light);
+    margin: 30px 0;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 40px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--card-border);
+    background: var(--navy-mid);
+  }
+
+  .legend-swatch.no-pic {
+    background: var(--no-pic);
+    border-style: dashed;
+  }
+
+  .legend-swatch.empty {
+    border-radius: 5px;
+    background: var(--seat-empty);
+    border-style: dashed;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<h1>NAVCAL Seating Chart</h1>
+<p class="subtitle">Hover to highlight &nbsp;·&nbsp; Dashed circle = no picture</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch"></div> Has photo</div>
+  <div class="legend-item"><div class="legend-swatch no-pic"></div> No picture</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ TOP HALF ═══════════════════════════════════════════ -->
+
+<div class="section">
+
+  <!-- LEFT CLUSTER -->
+  <div class="cluster">
+    <div class="section-label">Left</div>
+    <div class="row">
+      <div class="person"><div class="avatar">NZ</div><div class="name">Nisa Z.</div></div>
+      <div class="person"><div class="avatar">AA</div><div class="name">Alan A.</div></div>
+      <div class="person"><div class="avatar">Ch</div><div class="name">Chinna</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">RG</div><div class="name">Ronald G.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">SS</div><div class="name">Stephan S.</div></div>
+      <div class="person"><div class="avatar">JD</div><div class="name">Jacob D.</div></div>
+    </div>
+  </div>
+
+  <!-- LEFT-CENTER CLUSTER -->
+  <div class="cluster">
+    <div class="section-label">Left–Center</div>
+    <div class="row">
+      <div class="person"><div class="avatar">NA</div><div class="name">Naomi A.</div></div>
+      <div class="person"><div class="avatar">MS</div><div class="name">Merilyn S.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">Ch</div><div class="name">Chanda</div></div>
+    </div>
+    <div class="row">
+      <div style="display:flex;flex-direction:column;gap:3px;justify-content:flex-end">
+        <div class="name" style="font-size:0.62rem;color:var(--muted)">Hector P.</div>
+        <div class="name" style="font-size:0.62rem;color:var(--muted)">Dana G.</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">MC</div><div class="name">Mari C.</div></div>
+      <div class="person"><div class="avatar">MD</div><div class="name">Maree D.</div></div>
+    </div>
+  </div>
+
+  <!-- CENTER CLUSTER (two sub-groups) -->
+  <div class="cluster" style="flex-grow:1">
+    <div class="section-label">Center</div>
+
+    <!-- Top sub-group -->
+    <div class="row" style="justify-content:center">
+      <div class="person"><div class="avatar">DV</div><div class="name">Denise V.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Michelle R.</div></div>
+      <div class="person"><div class="avatar">BR</div><div class="name">Brittany R.-C.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">GM</div><div class="name">Gabriella M.</div></div>
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Rebecca C.</div></div>
+    </div>
+
+    <div style="height:16px;border-bottom:1px solid var(--navy-light);margin:4px 0 12px"></div>
+
+    <!-- Bottom sub-group -->
+    <div class="row" style="justify-content:center">
+      <div class="person"><div class="avatar">NR</div><div class="name">Natalia R.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">ES</div><div class="name">Elijah S.</div></div>
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Sheraz Shriqui</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">MC</div><div class="name">Megan C.</div></div>
+      <div class="person"><div class="avatar">DK</div><div class="name">Dani K S.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">Le</div><div class="name">Leah</div></div>
+      <div class="person"><div class="avatar">Ma</div><div class="name">Manny</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">AS</div><div class="name">Aileen S.</div></div>
+      <div class="person"><div class="avatar">AR</div><div class="name">Ariel R.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">JU</div><div class="name">Jo U.</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT CLUSTER (two sub-groups) -->
+  <div class="cluster">
+    <div class="section-label">Right</div>
+
+    <!-- Top sub-group -->
+    <div class="row" style="justify-content:flex-end">
+      <div class="person"><div class="avatar">DR</div><div class="name">Diego R.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Jacob N.</div></div>
+      <div class="person"><div class="avatar">ZB</div><div class="name">Zakai B.-B.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">JS</div><div class="name">Josue S.</div></div>
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Yohance B.-B.</div></div>
+    </div>
+
+    <div style="height:16px;border-bottom:1px solid var(--navy-light);margin:4px 0 12px"></div>
+
+    <!-- Bottom sub-group -->
+    <div class="row" style="justify-content:flex-end">
+      <div class="person"><div class="avatar">AN</div><div class="name">Ashley N.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">BA</div><div class="name">Brooklyn A.</div></div>
+      <div class="person"><div class="avatar">JH</div><div class="name">Javin H.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">AM</div><div class="name">Aislinn M.</div></div>
+      <div class="person"><div class="avatar">CT</div><div class="name">Cristhel T.</div></div>
+    </div>
+    <div class="row" style="justify-content:flex-end">
+      <div class="person"><div class="avatar">Ha</div><div class="name">Haya</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">LZ</div><div class="name">Lucinda Z.</div></div>
+      <div class="person"><div class="avatar">GA</div><div class="name">Giselle A.</div></div>
+    </div>
+  </div>
+
+</div><!-- end top section -->
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════ BOTTOM HALF ═══════════════════════════════════════════ -->
+
+<div class="section">
+
+  <!-- BOTTOM LEFT CLUSTER -->
+  <div class="cluster">
+    <div class="section-label">Bottom Left</div>
+    <div class="row">
+      <div class="person"><div class="avatar">YH</div><div class="name">Yessenia H.</div></div>
+      <div class="person"><div class="avatar">SR</div><div class="name">Samantha R.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">VC</div><div class="name">Vanessa C.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Paloma V.</div></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM CENTER CLUSTER -->
+  <div class="cluster" style="flex-grow:1">
+    <div class="section-label">Bottom Center</div>
+    <div class="row">
+      <div class="person"><div class="avatar">HC</div><div class="name">Hanna C.</div></div>
+      <div class="person"><div class="avatar">AP</div><div class="name">Abril P.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">AL</div><div class="name">Anely L.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">AF</div><div class="name">Alejandra F.</div></div>
+      <div class="person"><div class="avatar">EC</div><div class="name">Emely C.</div></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM RIGHT-CENTER CLUSTER -->
+  <div class="cluster">
+    <div class="section-label">Bottom Right–Center</div>
+    <div class="row">
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Kaylin M.</div></div>
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Ally P.</div></div>
+      <div class="person"><div class="avatar">FA</div><div class="name">Firdous A.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">LZ</div><div class="name">Liliya Z.</div></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM RIGHT CLUSTER -->
+  <div class="cluster">
+    <div class="section-label">Bottom Right</div>
+    <div class="row">
+      <div class="person"><div class="avatar">EE</div><div class="name">Emeli E.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar">NT</div><div class="name">Nevaeh T.</div></div>
+      <div class="person"><div class="avatar">LA</div><div class="name">Layla A.</div></div>
+    </div>
+    <div class="row">
+      <div class="person"><div class="avatar no-pic">No Pic</div><div class="name">Danielle W.</div></div>
+      <div class="person"><div class="avatar">FT</div><div class="name">Felicia T.</div></div>
+    </div>
+  </div>
+
+</div><!-- end bottom section -->
+
+<p style="text-align:center;font-size:0.68rem;color:var(--muted);margin-top:40px;letter-spacing:0.1em;">
+  ⚓ NAVCAL &nbsp;·&nbsp; All names preserved from original chart &nbsp;·&nbsp; Initials shown in place of photos
+</p>
+
+</body>
+</html>
